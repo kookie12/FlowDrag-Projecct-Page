@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlowDrag: 3D-aware Drag-based Image Editing\\with Mesh-guided Deformation Vector Flow Fields</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.ico">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <!-- Math. -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <!-- Math. -->
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <!-- <img src="static/images/FlowDrag.png" alt="FlowDrag" style="display: block; margin: 0 auto; width: 80px;"/> -->
+          <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+          <h1 class="title is-2 publication-title" style="font-family: 'Fredoka', sans-serif; font-weight: 600;">
+            <span style="background: linear-gradient(45deg, #4A90E2, #7BB3F0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent;">FlowDrag</span><span style="color: #333;">: 3D-aware Drag-based Image Editing with Mesh-guided Deformation Vector Flow Fields</span>
+          </h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://kookie12.github.io/">Gwanhyeong Koo</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://dbstjswo505.github.io/">Sunjae Yoon</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://sanctusfactory.com/family_02.php/">Younghwan Lee</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://jiwoohong93.github.io/">Ji Woo Hong</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="http://sanctusfactory.com/family.php">Chang D. Yoo</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Korea Advanced Institute of Science and Technology</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">ICML 2025 (Spotlight)</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2507.08285"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2507.08285"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/kookie12/FlowDrag"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+<!-- TL;DR. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom:0;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">TL;DR</h2>
+        <div class="content has-text-justified">
+          <p>
+            <strong>FlowDrag</strong> enables precise drag-based image editing by leveraging 3D mesh-guided deformation to maintain geometric consistency while providing accurate handle-to-target point alignment.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- <div class="hero-body" style="padding: 0px;">
+      <div class="carousel results-carousel">
+        <div class="item">
+          <img src="./static/images/tldr-1.png" alt="Description for image 1">
+        </div>
+        <div class="item">
+          <img src="./static/images/tldr-2.png" alt="Description for image 2">
+        </div>
+      </div>
+    </div> -->
+  </div>
+</section>
+<!--/ TL;DR. -->
+
+
+
+<!-- Abstract. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <!-- <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Drag-based editing allows precise object manipulation through point-based control, offering user convenience. 
+            However, current methods often suffer from a geometric inconsistency problem by focusing exclusively on 
+            matching user-defined points, neglecting the broader geometry and leading to artifacts or unstable edits. 
+            We propose <strong>FlowDrag</strong>, which leverages geometric information for more accurate and coherent 
+            transformations. Our approach constructs a 3D mesh from the image, using an energy function to guide mesh 
+            deformation based on user-defined drag points. The resulting mesh displacements are projected into 2D and 
+            incorporated into a UNet denoising process, enabling precise handle-to-target point alignment while preserving 
+            structural integrity. Additionally, existing drag-editing benchmarks provide no ground truth, making it difficult 
+            to assess how accurately the edits match the intended transformations. To address this, we present VFD 
+            (VidFrameDrag) benchmark dataset, which provides ground-truth frames using consecutive shots in a video dataset. 
+            FlowDrag outperforms existing drag-based editing methods on both VFD Bench and DragBench.
+          </p>
+        </div> -->
+        <h2 class="title is-3">Problem</h2>
+        <div class="content has-text-justified">
+          <p>
+            Current drag-based image editing methods suffer from geometric inconsistency because they rely primarily on optimizing user-defined points locally, neglecting global geometric context. This approach often leads to unnatural deformations and structural artifacts in edited images. Moreover, the absence of a reliable benchmark with ground truth data makes it challenging to quantitatively evaluate the accuracy of such editing results.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-body" style="padding: 0px;">
+      <div class="carousel results-carousel">
+        <div class="item">
+          <img src="./static/images/abstract_1.png" alt="Description for image 1""> 
+        </div>
+        <div class="item">
+          <img src="./static/images/abstract_2.png" alt="Description for image 2">
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+<!--/ Abstract. -->
+
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+
+<!-- Method. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom:0;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+
+        <img src="./static/images/method.png" alt="Description for image 1">
+
+        <div class="content has-text-justified">
+          <p>
+            We propose <strong>FlowDrag</strong>, a Geometry-aware 3-Step Drag Editing Pipeline.
+            <ol>
+              <li><strong>3D Mesh Generation</strong>: build DepthMesh (fast) or DiffMesh (complete) from the input image.</li>
+              <li><strong>Progressive Mesh Deformation</strong>: apply SR-ARAP on the mesh then project vertex displacements into a dense 2D vector flow.</li>
+              <li><strong>Vector Flow-based Drag Editing</strong>: leverage the flow and mesh projection to guide motion supervision & point tracking.</li>
+            </ol>
+          </p>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Method. -->
+
+<!-- VFD Dataset. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom:0;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">VFD Dataset</h2>
+
+        <img src="./static/images/VFD_dataset.png" alt="Description for image 1" style="max-width: 70%; height: auto; margin: 0 auto; display: block;">
+
+        <div class="content has-text-justified">
+          <p>
+              Existing drag-based editing benchmarks lack ground-truth (GT) images, which makes objective evaluation of edit accuracy challenging. To overcome this limitation, we introduce the <strong>VFD (Video Frame Drag) Dataset</strong>, comprising 250 carefully curated input and ground-truth image pairs extracted from consecutive video frames in DAVIS and Pexels datasets. Human annotators precisely label matching points between frames to define accurate drag directions, offering reliable references for geometry-aware performance evaluation. 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Method. -->
+
+
+<!-- Experiment Results. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Experiment Results</h2>
+        <div class="content has-text-justified">
+          <p>
+            Our method, FlowDrag, achieved the highest performance on DragBench in terms of the MD metric. Additionally, on the VFD benchmark, FlowDrag outperformed all other approaches across PSNR, 1-LPIPS, and MD metrics, demonstrating its superior accuracy and consistency in geometry-aware image editing tasks.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-body" style="padding: 0px;">
+      <div class="carousel results-carousel">
+        <div class="item">
+          <img src="./static/images/results_gooddrag.png" alt="Description for image 1">
+        </div>
+        <div class="item">
+          <img src="./static/images/results_flowdrag.png" alt="Description for image 2">
+        </div>
+        <div class="item">
+          <img src="./static/images/results_visualization.png" alt="Description for image 3">
+        </div>
+        <div class="item">
+          <img src="./static/images/results_vfd_quantitative.png" alt="Description for image 3">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Experiment Results. -->
+
+
+<!-- Poster. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Poster</h2>
+
+        <div class="content has-text-justified">
+          <iframe  src="static/images/FlowDrag_v4-compressed.pdf" width="100%" height="550"></iframe>
+          <!-- <p>
+            (TBU)
+          </p> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Poster. -->
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@inproceedings{kooflowdrag,
+      title={FlowDrag: 3D-aware Drag-based Image Editing with Mesh-guided Deformation Vector Flow Fields},
+      author={Koo, Gwanhyeong and Yoon, Sunjae and Lee, Younghwan and Hong, Ji Woo and Yoo, Chang D},
+      booktitle={Forty-second International Conference on Machine Learning}
+    }</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/images/FlowDrag_v4-compressed.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/kookie12/FlowDrag" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

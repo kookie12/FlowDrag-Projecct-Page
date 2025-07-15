@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoCoA-Mix: Confusion-and-Confidence-Aware\\Mixture Model for Context Optimization</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.ico">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <!-- Math. -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <!-- Math. -->
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <img src="static/images/CoCoA-Mix.png" alt="CoCoA-Mix" style="display: block; margin: 0 auto; width: 80px;"/>
+          <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+          <h1 class="title is-2 publication-title" style="color:#7d441ffe; font-family: 'Fredoka', sans-serif; font-weight: 600;">CoCoA-Mix: Confusion-and-Confidence-Aware Mixture Model for Context Optimization</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://dazory.github.io/">Dasol Hong</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://woojulee24.github.io/">Wooju Lee</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://urobot.kaist.ac.kr/url_teams/prof-hyunmyung/">Myung Hyun</a><sup>1</sup>,
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Korea Advanced Institute of Science and Technology</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">ICML 2025</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2506.07484"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2506.07484"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/url-kaist/CoCoA-Mix"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+<!-- TL;DR. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom:0;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">TL;DR</h2>
+        <div class="content has-text-justified">
+          <p>
+            <i>CoCoA-Mix</i> enhances specialization and generalization in prompt tuning using <i>CoA-loss</i> for refined decision boundaries and <i>CoA-weights</i> for confidence-based scaling.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero-body" style="padding: 0px;">
+      <div class="carousel results-carousel">
+        <div class="item">
+          <img src="./static/images/tldr-1.png" alt="Description for image 1">
+        </div>
+        <div class="item">
+          <img src="./static/images/tldr-2.png" alt="Description for image 2">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ TL;DR. -->
+
+
+<!-- 
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<!-- Abstract. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Prompt tuning, which adapts vision-language models by freezing model parameters and optimizing only the prompt, 
+            has proven effective for task-specific adaptations. The core challenge in prompt tuning is improving 
+            specialization for a specific task and generalization for unseen domains. However, frozen encoders often 
+            produce misaligned features, leading to confusion between classes and limiting specialization. To overcome 
+            this issue, we propose a confusion-aware loss (CoA-loss) that improves specialization by refining the decision 
+            boundaries between confusing classes. Additionally, we mathematically demonstrate that a mixture model can 
+            enhance generalization without compromising specialization. This is achieved using confidence-aware weights 
+            (CoA-weights), which adjust the weights of each prediction in the mixture model based on its confidence within 
+            the class domains. Extensive experiments show that CoCoA-Mix, a mixture model with CoA-loss and CoA-weights, 
+            outperforms state-of-the-art methods by enhancing specialization and generalization. Our code is publicly 
+            available at <a href="https://github.com/url-kaist/CoCoA-Mix" target="_blank">https://github.com/url-kaist/CoCoA-Mix</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-body" style="padding: 0px;">
+      <div class="carousel results-carousel">
+        <div class="item">
+          <img src="./static/images/abstract-1.png" alt="Description for image 1"> 
+          <!-- style="padding-left: 126px; padding-right: 126px;"> -->
+        </div>
+        <div class="item">
+          <img src="./static/images/abstract-2.png" alt="Description for image 2">
+           <!-- style="padding-left: 126px; padding-right: 126px;"> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Abstract. -->
+
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+
+<!-- Method. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom:0;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+
+        <img src="./static/images/method.png" alt="Description for image 1">
+
+        <div class="content has-text-justified">
+          <p>
+            The learnable prompt \( \boldsymbol{t}_i \) is optimized with <i>CoA-loss</i> to specialize in distinguishing confusing classes within the training domain.
+            <i>CoA-weights</i> adjusts prediction confidence by increasing \(\pi_i^\text{in}\) for in-class and decreasing \(\pi_i^\text{out}\) for out-class.
+            At inference, the specialized predictions \(\hat{p}_{\mathbf{t}_i}\), adjusted via <i>CoA-weights</i>, are combined with the generalized predictions \(\hat{p}_{\mathbf{t}_0}\) to ensure generalization while preserving specialization.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Method. -->
+
+
+<!-- Experiment Results. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Experiment Results</h2>
+        <div class="content has-text-justified">
+          <p>
+            CoCoA-Mix achieves average harmonic mean improvements of 15.28% and 3.28% over zero-shot CLIP in base-to-new generalization and cross-dataset transfer, respectively;
+            it also improves the average accuracy in few-shot class-incremental learning by 5.6%p.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-body" style="padding: 0px;">
+      <div class="carousel results-carousel">
+        <div class="item">
+          <!-- <img src="./static/images/experiment-base2new.png" alt="Description for image 1" style="padding-left: 126px; padding-right: 126px;"> -->
+          <img src="./static/images/experiment-base2new.png" alt="Description for image 1">
+        </div>
+        <div class="item">
+          <!-- <img src="./static/images/experiment-fscil.png" alt="Description for image 2" style="padding-left: 126px; padding-right: 126px;"> -->
+          <img src="./static/images/experiment-fscil.png" alt="Description for image 2">
+        </div>
+        <div class="item">
+          <!-- <img src="./static/images/experiment-cross.png" alt="Description for image 2" style="padding-left: 126px; padding-right: 126px;"> -->
+          <img src="./static/images/experiment-cross.png" alt="Description for image 2">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Experiment Results. -->
+
+
+<!-- Poster. -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Poster</h2>
+
+        <div class="content has-text-justified">
+          <iframe  src="static/images/cocoamix_poster_compressed.pdf" width="100%" height="550"></iframe>
+          <!-- <p>
+            (TBU)
+          </p> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Poster. -->
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{hong2025cocoa,
+  title={CoCoA-Mix: Confusion-and-Confidence-Aware Mixture Model for Context Optimization},
+  author={Hong, Dasol and Lee, Wooju and Myung, Hyun},
+  journal={arXiv preprint arXiv:2506.07484},
+  year={2025}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/pdf/cocoa-mix-confusion-and-confidence-aware_mixture_model_for_context_optimization.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/url-kaist/CoCoA-Mix" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
